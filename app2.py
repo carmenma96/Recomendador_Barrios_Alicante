@@ -107,19 +107,19 @@ hints = {
 # Sliders con expander de ayuda
 for col in cols_directo:
     label = nombres_variables[col]
-    with st.expander(f"ℹ️ ¿Qué es «{label}»?"):
-        st.write(hints[col])
     pesos.append(
         st.slider(label, -5.0, 5.0, 1.0, key=col)
     )
+    with st.expander(f"ℹ️"):
+    st.write(hints[col])
 
 for col in cols_inverso:
     label = nombres_variables[col] + " (menos es mejor)"
-    with st.expander(f"ℹ️ ¿Qué es «{nombres_variables[col]}»?"):
-        st.write(hints[col])
     pesos.append(
         st.slider(label, -5.0, 5.0, -1.0, key=col)
     )
+    with st.expander(f"ℹ️"):
+    st.write(hints[col])
 
 pesos = np.array(pesos)
 
