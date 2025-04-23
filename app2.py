@@ -32,24 +32,39 @@ def run_topsis(M: np.ndarray, pesos: np.ndarray) -> np.ndarray:
 # ----------------------------
 # Interfaz de usuario
 # ----------------------------
-st.title("Recomendador de barrios por DESTINO")
+st.title("Descubre tu Barrio Ideal:")
+st.markdown("###  Explora, Personaliza e Invierte en Alicante")
+
 
 # Elegir DESTINO
-destino = st.selectbox("Elige el tipo de DESTINO:", df['DESTINO'].unique())
+destino = st.selectbox("¡Dale forma a tu FUTURO!: Escoge tu oportunidad de inversión", df['DESTINO'].unique())
 
 # Sliders para los pesos
 cols_directo = ['cantidad_ocio_comercio', 'cantidad_oficinas', 'cantidad_residencial', 'centros_docentes', 'nivel_socio_economico']
 cols_inverso = ['distancia_al_mar', 'Valor/m2_predicho']
 all_cols = cols_directo + cols_inverso
 
-st.subheader("Ajusta tus preferencias (pesos)")
+nombres_variables = {
+    'cantidad_ocio_comercio': '🍽️🛍️ Porcentaje de Ocio y Comercio',
+    'cantidad_oficinas': '🏢 Porcentaje de Oficinas',
+    'cantidad_residencial': '🏘️ Porcentaje de Viviendas',
+    'centros_docentes': '🏫 Cantidad de Centros Educativos',
+    'nivel_socio_economico': '💰 Nivel Socioeconómico',
+    'distancia_al_mar': '🌊 Cercanía al Mar',
+    'Valor/m2_predicho': '💸 Precio por m² (estimado)'
+}
+
+
+st.subheader("⚖️ Personaliza tus prioridades: define la importancia de cada factor")
 
 pesos = []
 for col in cols_directo:
-    pesos.append(st.slider(f"{col}", -5, 5, 1))
+    label = nombres_variables.get(col, col)
+    pesos.append(st.slider(f"{label}", -5, 5, 1))
 
 for col in cols_inverso:
-    pesos.append(st.slider(f"{col} (menos es mejor)", -5, 5, -1))
+    label = nombres_variables.get(col, col)
+    pesos.append(st.slider(f"{label}", -5, 5, -1))
 
 pesos = np.array(pesos)
 
@@ -73,7 +88,8 @@ df_filtrado["topsis_score"] = run_topsis(M, pesos)
 # ----------------------------
 top3 = df_filtrado.sort_values("topsis_score", ascending=False).head(3)
 st.subheader("🏆 Top 3 barrios recomendados")
-df_top3 = top3[['Barrio', 'topsis_score']].reset_index(drop=True)
+# Renombrar columna, resetear índice y empezar desde 1
+df_top3 = top3[['Barrio', 'topsis_score']].rename(columns={'topsis_score': 'Puntaje de Afinidad'}).reset_index(drop=True)
 df_top3.index = df_top3.index + 1
 st.dataframe(df_top3)
 
@@ -81,7 +97,7 @@ st.dataframe(df_top3)
 # ----------------------------
 # Mapa con colores
 # ----------------------------
-st.subheader("🗺️ Mapa de barrios")
+st.subheader("🗺️ Alicante a color: Mapa de oportunidades")
 
 # Unir con geometría
 gdf_destino = gdf.merge(df_filtrado[['Barrio', 'topsis_score']], on='Barrio', how='left')
