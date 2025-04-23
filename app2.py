@@ -12,9 +12,8 @@ from streamlit_folium import st_folium
 @st.cache_data
 def load_data():
     df = pd.read_csv("df_topsis_normalizado.csv")  # o .parquet si prefieres
-    geo = gpd.read_file("BARRIOS DE ALICANTE1.json")  # si usas mapas
+    geo = gpd.read_file("Alicante_Barrios.json")  # si usas mapas
     geo = geo.rename(columns={'name': 'Barrio'})
-    geo['Barrio'] = geo['Barrio'].replace('CASO ANTIGUO - SANTA CRUZ','CASCO ANTIGUO-SANTA CRUZ')
     return df, geo
 
 df, gdf = load_data()
