@@ -111,7 +111,7 @@ for col in cols_directo:
         st.slider(label, -5.0, 5.0, 1.0, key=col)
     )
     with st.expander(f"ℹ️"):
-    st.write(hints[col])
+        st.write(hints[col])
 
 for col in cols_inverso:
     label = nombres_variables[col] + " (menos es mejor)"
@@ -119,7 +119,7 @@ for col in cols_inverso:
         st.slider(label, -5.0, 5.0, -1.0, key=col)
     )
     with st.expander(f"ℹ️"):
-    st.write(hints[col])
+        st.write(hints[col])
 
 pesos = np.array(pesos)
 
