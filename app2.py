@@ -88,7 +88,7 @@ gdf_destino = gdf.merge(df_filtrado[['Barrio', 'topsis_score']], on='Barrio', ho
 colores = ['red', 'orange', 'green']
 color_map = {}
 
-for i, row in top3.iterrows():
+for i, (_, row) in enumerate(top3.iterrows()):
     color_map[row['Barrio']] = colores[i]
 
 def get_color(barrio):
