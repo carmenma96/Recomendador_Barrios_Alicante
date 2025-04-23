@@ -73,7 +73,10 @@ df_filtrado["topsis_score"] = run_topsis(M, pesos)
 # ----------------------------
 top3 = df_filtrado.sort_values("topsis_score", ascending=False).head(3)
 st.subheader("🏆 Top 3 barrios recomendados")
-st.dataframe(top3[['Barrio', 'topsis_score']])
+df_top3 = top3[['Barrio', 'topsis_score']].reset_index(drop=True)
+df_top3.index = df_top3.index + 1
+st.dataframe(df_top3)
+
 
 # ----------------------------
 # Mapa con colores
