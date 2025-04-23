@@ -58,26 +58,77 @@ nombres_variables = {
 st.subheader("⚖️ Personaliza tus prioridades: define la importancia de cada factor")
 
 pesos = []
+hints = {
+    'cantidad_ocio_comercio': (
+        "🍽️🛍️ Porcentaje de Ocio y Comercio\n\n"
+        "+5: Quiero barrios con **mucho ocio y comercio**, y lo considero un criterio muy importante.\n"
+        "0: No me importa la proporción de ocio/comercio.\n"
+        "-5: Prefiero barrios con **poco ocio y comercio**; cuanto más tengan, peor para mí."
+    ),
+    'cantidad_oficinas': (
+        "🏢 Porcentaje de Oficinas\n\n"
+        "+5: Doy prioridad a barrios con **muchas oficinas**.\n"
+        "0: La proporción de oficinas no afecta a mi decisión.\n"
+        "-5: Busco barrios con **pocas oficinas**; no me interesa el ambiente de oficinas."
+    ),
+    'cantidad_residencial': (
+        "🏘️ Porcentaje de Viviendas\n\n"
+        "+5: Prefiero barrios **predominantemente residenciales**.\n"
+        "0: No me importa la proporción de viviendas.\n"
+        "-5: Prefiero zonas con **menos viviendas**, quizá más mixtas o industriales."
+    ),
+    'centros_docentes': (
+        "🏫 Cantidad de Centros Docentes\n\n"
+        "+5: Valoro que haya **centros docentes** cerca.\n"
+        "0: La cantidad de centros docentes no influye.\n"
+        "-5: Busco barrios con **pocos centros docentes**."
+    ),
+    'nivel_socio_economico': (
+        "💰 Nivel Socioeconómico\n\n"
+        "+5: Me atraen barrios con **alto nivel socioeconómico**.\n"
+        "0: El nivel socioeconómico no me importa.\n"
+        "-5: Prefiero barrios con **nivel socioeconómico más bajo**."
+    ),
+    'distancia_al_mar': (
+        "🌊 Cercanía al Mar\n\n"
+        "+5: Quiero estar **lo más cerca posible** del mar.\n"
+        "0: La cercanía al mar no influye.\n"
+        "-5: Prefiero barrios **lejos** de la costa."
+    ),
+    'Valor/m2_predicho': (
+        "💸 Precio por m² (estimado)\n\n"
+        "+5: Doy máxima prioridad a que sea **barato**.\n"
+        "0: El precio por m² no me importa.\n"
+        "-5: Prefiero barrios **caros**."
+    ),
+}
+
+
+# Sliders con expander de ayuda
 for col in cols_directo:
-    label = nombres_variables.get(col, col)
-    pesos.append(st.slider(f"{label}", -5, 5, 1))
+    label = nombres_variables[col]
+    with st.expander(f"ℹ️ ¿Qué es «{label}»?"):
+        st.write(hints[col])
+    pesos.append(
+        st.slider(label, -5.0, 5.0, 1.0, key=col)
+    )
 
 for col in cols_inverso:
-    label = nombres_variables.get(col, col)
-    pesos.append(st.slider(f"{label}", -5, 5, -1))
+    label = nombres_variables[col] + " (menos es mejor)"
+    with st.expander(f"ℹ️ ¿Qué es «{nombres_variables[col]}»?"):
+        st.write(hints[col])
+    pesos.append(
+        st.slider(label, -5.0, 5.0, -1.0, key=col)
+    )
 
 pesos = np.array(pesos)
+
 
 # ----------------------------
 # Filtrar y calcular TOPSIS
 # ----------------------------
 df_filtrado = df[df["DESTINO"] == destino].copy()
 
-# Normalizar
-scaler = MinMaxScaler()
-df_filtrado[cols_directo] = scaler.fit_transform(df_filtrado[cols_directo])
-df_filtrado[cols_inverso] = scaler.fit_transform(df_filtrado[cols_inverso])
-df_filtrado[cols_inverso] = 1 - df_filtrado[cols_inverso]
 
 # Calcular TOPSIS
 M = df_filtrado[all_cols].values
