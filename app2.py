@@ -85,11 +85,11 @@ st.subheader("🗺️ Mapa de barrios")
 gdf_destino = gdf.merge(df_filtrado[['Barrio', 'topsis_score']], on='Barrio', how='left')
 
 # Asignar colores
-color_map = {
-    top3.iloc[0]['Barrio']: 'red',
-    top3.iloc[1]['Barrio']: 'orange',
-    top3.iloc[2]['Barrio']: 'green'
-}
+colores = ['red', 'orange', 'green']
+color_map = {}
+
+for i, row in top3.iterrows():
+    color_map[row['Barrio']] = colores[i]
 
 def get_color(barrio):
     return color_map.get(barrio, '#CCCCCC')
